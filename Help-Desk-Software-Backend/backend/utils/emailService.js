@@ -3,11 +3,12 @@ const nodemailer = require('nodemailer');
 
 const sendEmail = async function sendEmail(email, subject, html) {
     console.log('sendEmail function was called');
-   const transporter = nodemailer.createTransport({
+    const transporter = nodemailer.createTransport
+    ({
         host: 'smtp.gmail.com',
         port: 465,
         secure: true,
-        auth: {
+        auth:{
             user: 'infohelpdesk00@gmail.com',
             pass: 'arlbbjntovrlytmn'
         }

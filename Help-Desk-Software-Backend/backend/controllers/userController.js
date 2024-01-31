@@ -32,7 +32,6 @@ const tokenGenerator = (id) =>{
 }
 
 
- 
 const createUser = asyncHandler(async (req, res) => {
     const schema = Joi.object({
         name: Joi.string().min(3).max(200).required(), 
@@ -71,7 +70,6 @@ const createUser = asyncHandler(async (req, res) => {
     logger.error(err.message, { userId: req.user?._id });
 });
 
-  
 const login = asyncHandler(async (req ,res) =>{
     console.log("login was hit");
     console.log("req.body : ",req.body);
@@ -257,7 +255,7 @@ const confirmReseting = asyncHandler(async(req,res)=>{
         logger.error("inputs missing", { userId: req.user?._id });
          return res.json("fill all fields");
     }
-       
+
 
     try {
         const verify = jwt.verify(token , resetToken);
