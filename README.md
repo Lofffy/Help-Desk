@@ -1,141 +1,123 @@
 
-# Help Desk Application
+# Help Desk Model Service
 
-This repository contains a comprehensive Help Desk application designed to streamline customer support operations. It encompasses both backend and frontend components to deliver a seamless user experience.
+This service is a machine-learning-powered component of the Help Desk application, designed to handle ticket distribution among agents. It uses a trained model to predict the best agent for a ticket based on its priority and type.
 
-## Project Structure
+## Features
 
-- **Backend**: Located in the `Help-Desk-Software-Backend` directory, this component manages server-side operations, including API endpoints, database interactions, and authentication processes.
-- **Frontend**: Found in the `Help-Desk-Software-Frontend` directory, this part handles the client-side interface, providing users with an intuitive platform to interact with the application's features.
-
-## Key Features
-
-- **Ticket Management**: Efficiently create, track, and resolve support tickets.
-- **User Authentication**: Secure registration and login functionalities to protect user data.
-- **Responsive Design**: Ensures optimal user experience across various devices and screen sizes.
-- **Ticket Distribution**: A specialized service to handle ticket assignments among agents efficiently.
+- **Predictive Ticket Assignment**: Uses a machine learning model to assign tickets efficiently.
+- **Data Mapping**: Maps ticket properties (`Priority` and `Type`) into numerical values for processing.
+- **Agent Prediction**: Provides probabilities for ticket assignment across agents.
 
 ## Technologies Used
 
-- **Backend**: Node.js, Express.js, MongoDB
-- **Frontend**: React.js, HTML, CSS
+- **Framework**: FastAPI
+- **Machine Learning**: RandomForestClassifier (scikit-learn)
+- **Data Handling**: pandas
+- **Server**: Uvicorn
 
-## Getting Started
+## API Endpoints
+
+### `GET /`
+
+- **Description**: A welcome endpoint to test if the service is running.
+- **Response**:
+  ```json
+  {
+      "message": "Hello World"
+  }
+  ```
+
+### `POST /predict`
+
+- **Description**: Predicts the best agent for a ticket based on its priority and type.
+- **Request Payload**:
+  ```json
+  {
+      "priority": "high",
+      "type": "software"
+  }
+  ```
+- **Response**:
+  ```json
+  {
+      "prediction": {
+          "Agent1": 0.7,
+          "Agent2": 0.2,
+          "Agent3": 0.1
+      }
+  }
+  ```
+
+## Setup Instructions
 
 ### Prerequisites
 
-Ensure you have the following installed on your system:
+Ensure you have the following installed:
 
-- Node.js
-- npm
+- Python (>=3.7)
+- pip (Python package installer)
 
 ### Installation Steps
 
 1. **Clone the Repository**:
-
    ```bash
    git clone https://github.com/Lofffy/Help-Desk.git
    ```
-
-2. **Setup Backend**:
-
-   - Navigate to the backend directory:
-
-     ```bash
-     cd Help-Desk/Help-Desk-Software-Backend
-     ```
-
-   - Install dependencies:
-
-     ```bash
-     npm install
-     ```
-
-   - Configure environment variables:
-     Create a `.env` file in the backend directory with the necessary environment variables (e.g., database URI, authentication secrets).
-
-   - Start the backend server:
-
-     ```bash
-     npm start
-     ```
-
-3. **Setup Frontend**:
-
-   - Navigate to the frontend directory:
-
-     ```bash
-     cd ../Help-Desk-Software-Frontend
-     ```
-
-   - Install dependencies:
-
-     ```bash
-     npm install
-     ```
-
-   - Start the frontend application:
-
-     ```bash
-     npm start
-     ```
-
-## Ticket Distribution Model Service
-
-The `model-service` directory contains a specialized module designed to handle the distribution of support tickets among agents efficiently. This service ensures a balanced workload and optimizes response times.
-
-### Features
-
-- **Round-Robin Assignment**: Distributes incoming tickets evenly across available agents.
-- **Priority Handling**: Assigns tickets based on predefined priority levels.
-- **Load Balancing**: Considers the current workload of each agent to prevent overloading.
-
-### Setup Instructions
-
-1. **Navigate to the Model Service Directory**:
-
+   Navigate to the model service directory:
    ```bash
    cd Help-Desk/model-service
    ```
 
 2. **Install Dependencies**:
-
+   Install the required Python packages:
    ```bash
-   npm install
+   pip install fastapi pandas scikit-learn uvicorn
    ```
 
-3. **Configure Environment Variables**:
+3. **Prepare the Dataset**:
+   - Place the dataset file `Dataset for Extrafeature.csv` in the `model-service` directory.
+   - Ensure the dataset contains the columns `Priority`, `Type`, and `Agent`.
 
-   Create a `.env` file in the `model-service` directory with the following variables:
-
-   ```env
-   DATABASE_URI=your_database_uri
-   SERVICE_PORT=desired_port_number
-   ```
-
-4. **Start the Service**:
-
+4. **Run the Service**:
+   Start the FastAPI application using Uvicorn:
    ```bash
-   npm start
+   uvicorn main:app --reload --host 0.0.0.0 --port 8000
+   ```
+   The service will be accessible at `http://localhost:8000`.
+
+5. **Test the Service**:
+   Use `Postman`, `curl`, or any HTTP client to test the endpoints.
+
+   Example using `curl`:
+   ```bash
+   curl -X POST http://localhost:8000/predict    -H "Content-Type: application/json"    -d '{"priority": "high", "type": "software"}'
    ```
 
-### Integration with Backend
+   Example Response:
+   ```json
+   {
+       "prediction": {
+           "Agent1": 0.7,
+           "Agent2": 0.2,
+           "Agent3": 0.1
+       }
+   }
+   ```
 
-To integrate the model service with the backend application:
+## Training and Accuracy
 
-- **API Endpoints**: Ensure that the backend server routes ticket assignment requests to the model service's API endpoints.
-- **Inter-Service Communication**: Use RESTful API calls or message queues to facilitate communication between the backend and the model service.
+- **Model**: RandomForestClassifier
+- **Dataset**: `Dataset for Extrafeature.csv`
+- **Training Accuracy**: The model achieves high accuracy on the training data, ensuring reliable predictions.
 
-### Testing the Service
+## Integration with Backend
 
-After setup, test the ticket distribution functionality:
+To integrate this service with the Help Desk backend:
 
-- **Simulate Ticket Creation**: Create multiple tickets and observe their assignment to agents.
-- **Monitor Agent Workloads**: Verify that the service balances the workload among agents as intended.
-
-## Contributing
-
-Contributions are welcome! Please fork the repository and submit a pull request with your proposed changes.
+1. Ensure the backend makes API calls to the `/predict` endpoint for ticket assignment.
+2. Properly map ticket properties (`priority` and `type`) to the expected values (e.g., `high`, `software`).
+3. Use the prediction probabilities to determine the best agent for the ticket.
 
 ## Contact
 
@@ -143,4 +125,4 @@ For any inquiries or issues, please open an issue in this repository.
 
 ---
 
-*Note: Ensure proper configuration of the `.env` file for smooth functionality.*
+*Note: Ensure the dataset is prepared and dependencies are installed for the service to function properly.*
